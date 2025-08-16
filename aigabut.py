@@ -34,7 +34,7 @@ def init_llm():
         openai_api_key = GEMINI_API_KEY,
         openai_api_base = GEMINI_API_BASE,
         temperature= 0.7,
-        max_tokens=4000,
+        max_tokens=3000,
     )
 
 def response_ke_user(problem):
@@ -96,5 +96,6 @@ if prompt := st.chat_input("Tanya apa saja..."):
     
     # Tambahkan respons AI ke riwayat
     st.session_state.messages.append({"role": "assistant", "content": response})
+
 
 
