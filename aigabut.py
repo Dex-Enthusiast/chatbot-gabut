@@ -30,7 +30,7 @@ GEMINI_API_BASE = "https://openrouter.ai/api/v1"
 
 def init_llm():
     return ChatOpenAI(
-        model_name = "google/gemini-2.5-pro", 
+        model_name = "google/gemini-pro-1.5", 
         openai_api_key = GEMINI_API_KEY,
         openai_api_base = GEMINI_API_BASE,
         temperature= 0.7,
@@ -96,3 +96,4 @@ if prompt := st.chat_input("Tanya apa saja..."):
     
     # Tambahkan respons AI ke riwayat
     st.session_state.messages.append({"role": "assistant", "content": response})
+
