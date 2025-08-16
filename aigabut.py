@@ -4,13 +4,12 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.chat_models import ChatOpenAI
 
-# WAJIB DI BARIS PALING ATAS
 st.set_page_config(
-    layout="centered", # Tampilan berpusat, cocok untuk chat
+    layout="centered", # tampilan chat di tengah
     page_title="Evangline AI"
 )
 
-# FUNGSI UNTUK MENYUNTIKKAN CSS
+# CSS
 def hide_streamlit_elements():
     hide_streamlit_style = """
         <style>
@@ -22,12 +21,13 @@ def hide_streamlit_elements():
     """
     st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# PANGGIL FUNGSINYA DI SINI
 hide_streamlit_elements()
 
+# API
 GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 GEMINI_API_BASE = "https://openrouter.ai/api/v1"
 
+# LLM
 def init_llm():
     return ChatOpenAI(
         model_name = "google/gemini-pro-1.5", 
@@ -39,7 +39,7 @@ def init_llm():
 
 def response_ke_user(problem):
     llm = init_llm()
-
+    # training
     promp_template = ChatPromptTemplate.from_messages(
         [
             (
@@ -70,7 +70,7 @@ def response_ke_user(problem):
     return chain.invoke({"problem":problem})
 
 
-# --- 4. LOGIKA UTAMA APLIKASI CHAT ---
+# LOGIKA UTAMA APLIKASI CHAT
 
 # Inisialisasi riwayat chat
 if "messages" not in st.session_state:
@@ -96,6 +96,7 @@ if prompt := st.chat_input("Tanya apa saja..."):
     
     # Tambahkan respons AI ke riwayat
     st.session_state.messages.append({"role": "assistant", "content": response})
+
 
 
 
