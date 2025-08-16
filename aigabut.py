@@ -4,6 +4,27 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.chat_models import ChatOpenAI
 
+# WAJIB DI BARIS PALING ATAS
+st.set_page_config(
+    layout="centered", # Tampilan berpusat, cocok untuk chat
+    page_title="Evangline AI"
+)
+
+# FUNGSI UNTUK MENYUNTIKKAN CSS
+def hide_streamlit_elements():
+    hide_streamlit_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        .st-emotion-cache-18ni7ap {padding-top: 1rem;} /* Mengurangi padding atas */
+        </style>
+    """
+    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+# PANGGIL FUNGSINYA DI SINI
+hide_streamlit_elements()
+
 GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 GEMINI_API_BASE = "https://openrouter.ai/api/v1"
 
@@ -49,9 +70,29 @@ def response_ke_user(problem):
     return chain.invoke({"problem":problem})
 
 
-def reset_chat ():
-    st.session_state.chat_history = [{
-        "role": "assistant",
-        "content" : "Hai Aku Evangline, Aku akan membantu mu dalam menjawab pertanyaan kamu ^_^"
-    }]
-    st.rerun
+# --- 4. LOGIKA UTAMA APLIKASI CHAT ---
+
+# Inisialisasi riwayat chat
+if "messages" not in st.session_state:
+    st.session_state.messages = [{"role": "assistant", "content": "Hai! Aku Evangline. Ada yang bisa dibantu soal rencana liburanmu?"}]
+
+# Tampilkan pesan dari riwayat
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Terima input dari pengguna
+if prompt := st.chat_input("Tanya apa saja..."):
+    # Tambahkan pesan pengguna ke riwayat
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    # Tampilkan pesan pengguna
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Dapatkan dan tampilkan respons dari AI
+    with st.chat_message("assistant"):
+        response = response_ke_user(prompt)
+        st.markdown(response)
+    
+    # Tambahkan respons AI ke riwayat
+    st.session_state.messages.append({"role": "assistant", "content": response})
